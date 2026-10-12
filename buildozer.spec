@@ -14,6 +14,8 @@ fullscreen = 0
 
 android.permissions = INTERNET, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, SEND_SMS
 
+android.accept_sdk_license = True
+
 # Cấu hình API và NDK chuẩn tương thích tuyệt đối
 android.api = 33
 android.minapi = 24
