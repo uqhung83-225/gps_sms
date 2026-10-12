@@ -3,26 +3,38 @@ name: CI Android Buildozer
 on:
   push:
     branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
 
 jobs:
   build:
     runs-on: ubuntu-22.04
 
     steps:
+      # 1. Tải mã nguồn về máy chủ ảo
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Cài đặt Python 3.10 ổn định
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Build with Buildozer
-        uses: kivy/buildozer-action@v1
-        with:
-          command: buildozer -v android debug
-          buildozer_version: master
+      # 3. Cài đặt các thư viện hệ thống và công cụ Buildozer thủ công
+      - name: Install System Dependencies & Buildozer
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libffi-dev libssl-dev build-essential
+          python -m pip install --upgrade pip setuptools wheel
+          pip install "cython<3.0.0" buildozer
 
+      # 4. Tiến hành build file APK
+      - name: Build with Buildozer
+        run: |
+          buildozer -v android debug
+
+      # 5. Lưu lại file APK để tải về
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
